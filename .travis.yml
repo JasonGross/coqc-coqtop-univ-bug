@@ -11,6 +11,8 @@ env:
 
 before_script:
  - uname -a
+ - git clone https://github.com/HoTT/HoTT.git
+ - (cd HoTT && git checkout 8e0590e1a308b8beda3835d5daddd6bea6247742)
  - ./HoTT/etc/ci/before_script.sh
 
 script:
