@@ -11,7 +11,7 @@ env:
 
 before_script:
  - uname -a
- - ./HoTT/etc/before_script.sh
+ - ./HoTT/etc/ci/before_script.sh
 
 script:
  - (cd HoTT && ./autogen.sh)
