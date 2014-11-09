@@ -1,0 +1,25 @@
+language: python
+# python, for proviola
+
+python:
+ - "2.7"
+
+env:
+
+ matrix:
+   - WITH_AUTORECONF="yes" BUILD_COQ="yes"
+
+before_script:
+ - uname -a
+ - ./HoTT/etc/before_script.sh
+
+script:
+ - (cd HoTT && ./autogen.sh)
+ - (cd HoTT && ./configure)
+ - (cd HoTT && make stdlib)
+ - ./HoTT/hoqc prebug_coqc_vs_coqtop.v
+ - ./HoTT/hoqtop -compile prebug_coqc_vs_coqtop
+ - echo | ./HoTT/hoqtop -load-vernac-source prebug_coqc_vs_coqtop
+
+after_success:
+ - kill $PID_KEEP_ALIVE
