@@ -1,27 +1,17 @@
-language: python
-# python, for proviola
-
-python:
- - "2.7"
-
 env:
 
  matrix:
    - WITH_AUTORECONF="yes" BUILD_COQ="yes"
 
 before_script:
- - uname -a
- - git clone https://github.com/HoTT/HoTT.git
- - (cd HoTT && git checkout 8e0590e1a308b8beda3835d5daddd6bea6247742)
- - ./HoTT/etc/ci/before_script.sh
+ - sudo apt-get update -q
+ - ./etc/install_coq_deps.sh
+ - ./etc/install_coq.sh -prefix /usr/local -debug
 
 script:
- - (cd HoTT && ./autogen.sh)
- - (cd HoTT && ./configure)
- - (cd HoTT && make stdlib)
- - ./HoTT/hoqc prebug_coqc_vs_coqtop.v
- - ./HoTT/hoqtop -compile prebug_coqc_vs_coqtop
- - echo | ./HoTT/hoqtop -load-vernac-source prebug_coqc_vs_coqtop
-
-after_success:
- - kill $PID_KEEP_ALIVE
+ - coqc -nois -indices-matter bug_extensions_univ_helper_05.v
+ - coqtop -nois -indices-matter -compile bug_extensions_univ_helper_05
+ - coqtop -nois -indices-matter -load-vernac-source bug_extensions_univ_helper_05.v
+ - coqc -nois -indices-matter tmp.v
+ - coqtop -nois -indices-matter -compile tmp
+ - coqtop -nois -indices-matter -load-vernac-source tmp.v
